@@ -3,6 +3,8 @@ const uuid = require('uuid');
 const Lead = require('../model/Lead');
 const User = require('../model/User');
 const sampleLead = require('./constant');
+
+//Create a lead and assign it to a user
 router.post('/create', (req, res) => {
   const user = {
     _id: uuid.v4(),
@@ -28,7 +30,6 @@ router.post('/create', (req, res) => {
             .then(() => res.json('Lead is successfully added'))
             .catch(err => res.json(err));
         })
-        //res.json("Lead is Saved");
     })
     .catch(err => res.status(400).json(err));
 })
