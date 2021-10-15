@@ -1,48 +1,54 @@
 const mongoose = require('mongoose');
 
 const userSchema = mongoose.Schema({
-  FirstName:{
+  FirstName: {
     type: String,
     required: true,
     maxLength: 12
   },
-  LastName:{
+  LastName: {
     type: String,
     required: true,
     maxLength: 12
   },
-  EmailAddress:{
+  EmailAddress: {
     type: String,
     required: true
   },
-  Country:{
+  Country: {
     type: String,
     required: true
   },
-  PhoneNumber:{
+  PhoneNumber: {
     type: Number,
     required: true
   },
-  AssociatedMobileNumbers:[{
+  AssociatedMobileNumbers: [{
     type: Number
   }],
-  Age:{
+  Age: {
     type: Number,
     min: 16,
     max: 65,
     required: true
   },
-  Leads:[{
-    type: String, 
+  Leads: [{
+    type: String,
     ref: 'Lead'
   }],
-  CreatedOn:{
+  CreatedOn: {
     type: Date,
     default: Date.now
   },
-  password:{
-    type: String,
-    required: true
+  password: {
+    hash: {
+      type: String,
+      required: true
+    },
+    salt: {
+      type: String,
+      required: true
+    }
   }
 })
 

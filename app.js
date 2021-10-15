@@ -10,9 +10,9 @@ require('dotenv').config();
 const app = express();
 
 //Passport config
-require('./config/passport')(passport);
+require('./config/passport');
 
-//Connect To DB
+// //Connect To DB
 const connection = mongoose.connect(process.env.DB_String, config.db.dbOptions)
   .then(() => { console.log("Connected to the databse....") })
   .catch(error => console.log('Error While Connecting to db', error));
@@ -29,7 +29,7 @@ app.use(session({
   store: MongoStore.create({
     mongoUrl: process.env.DB_String,
     mongoOptions: config.db.dbOptions,
-    collection: 'sessions'
+    collection: 'session'
   }),
   saveUninitialized: true,
   cookie:{
@@ -53,13 +53,18 @@ app.get('/', (req, res)=>  {
   else{
     req.session.viewCount = 1;
   }
-  res.send(`<h1>HELLO, You have visited ${req.session.viewCount}</h1>`)
+  res.send(`<h1>HELLO, You have visited ${req.session.viewCount} times</h1>`)
 })
 app.use('/api/register', router);
 app.use('/api/lead', require('./api/lead'));
 app.use('/api/get', require('./api/getLeads'));
 app.use('/login', require('./api/login'));
-
+app.get('/failed',(req, res) => {
+  res.send("Login failed")
+})
+app.get('/success',(req, res) => {
+  res.send("Login Success")
+})
 //Listen to the port
 app.listen(process.env.port, () => {
   console.log(`app is listening on port ${process.env.port}`);

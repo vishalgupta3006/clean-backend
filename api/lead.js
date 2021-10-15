@@ -25,6 +25,7 @@ router.post('/create', (req, res) => {
   newLead.save()
     .then(() => {
       //Check a user and assign him the lead
+      console.log("HERE")
       User.findOne({ FirstName: "Vishal" })
         .then((user) => {
           user.Leads.push(newLead._id);
