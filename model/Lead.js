@@ -57,6 +57,10 @@ const leadSchema = mongoose.Schema({
   ModifiedOn:{
     type: Date,
     required: true
+  },
+  Owner: {
+    type: String,
+    ref: 'Lead'
   }
 })
 const Lead = mongoose.model('Lead', leadSchema);
