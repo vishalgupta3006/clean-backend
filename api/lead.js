@@ -6,7 +6,8 @@ const sampleLead = require('./constant');
 
 //Create a lead and assign it to a user
 router.post('/create', (req, res) => {
-  const user = {
+  //Save response of the body
+  const lead = {
     _id: uuid.v4(),
     FirstName: req.body.FirstName,
     LastName: req.body.LastName,
@@ -17,18 +18,22 @@ router.post('/create', (req, res) => {
     CreatedOn: Date.now(),
     ModifiedOn: Date.now()
   };
-  const newLead = new Lead(user);
+  //Mandatory check of the fields
+  if(!lead._id || !lead.FirstName || !lead.EmailAddress || !lead.PhoneNumber || !lead.LeadStage){
+    return res.status(400).json('Mandatory fields missing');
+  }
+  
+  //Upload to the database
+  const newLead = new Lead(lead);
   newLead.save()
     .then(() => {
+      //Check a user and assign him the lead
       User.findOne({ FirstName: "Vishal" })
-        .populate('Leads')
         .then((user) => {
-          console.log("Before length", user.Leads.length)
-          user.Leads.push(newLead);
-          console.log("After length", user.Leads.length)
+          user.Leads.push(newLead._id);
           user.save()
-            .then(() => res.json('Lead is successfully added'))
-            .catch(err => res.json(err));
+            .then(() => res.json('Lead is added'))
+            .catch(err => res.status(400).json(err));
         })
     })
     .catch(err => res.status(400).json(err));
