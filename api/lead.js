@@ -1,4 +1,5 @@
 const router = require("express").Router();
+const bodyParser = require("body-parser");
 const uuid = require('uuid');
 const Lead = require('../model/Lead');
 const User = require('../model/User');
@@ -8,21 +9,17 @@ const sampleLead = require('./constant');
 router.post('/create', (req, res) => {
   //Save response of the body
   const lead = {
+    ...req.body,
     _id: uuid.v4(),
-    FirstName: req.body.FirstName,
-    LastName: req.body.LastName,
-    EmailAddress: req.body.EmailAddress,
-    Country: req.body.Country,
-    PhoneNumber: req.body.PhoneNumber,
-    LeadStage: req.body.LeadStage,
     CreatedOn: Date.now(),
     ModifiedOn: Date.now()
   };
   //Mandatory check of the fields
-  if(!lead._id || !lead.FirstName || !lead.EmailAddress || !lead.PhoneNumber || !lead.LeadStage){
-    return res.status(400).json('Mandatory fields missing');
+  const emailRegex = new RegExp("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$");
+  if(!emailRegex.test(lead.EmailAddress)){
+    return res.status(400).json({message: "EmailAddress in not valid"});
   }
-  
+
   //Upload to the database
   const newLead = new Lead(lead);
   newLead.save()

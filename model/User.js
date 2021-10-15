@@ -33,11 +33,16 @@ const userSchema = mongoose.Schema({
     required: true
   },
   Leads:[{
-    type: mongoose.Schema.Types.String, ref: 'Lead'
+    type: String, 
+    ref: 'Lead'
   }],
   CreatedOn:{
     type: Date,
     default: Date.now
+  },
+  password:{
+    type: String,
+    required: true
   }
 })
 
