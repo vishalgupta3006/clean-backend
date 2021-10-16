@@ -3,9 +3,11 @@ const uuid = require('uuid');
 const url = require('url');
 const Lead = require('../model/Lead');
 const User = require('../model/User');
+const isEmailValid = require('../utils/emailValidation');
 const isAuth = require('../middlewares/authMiddleware').isAuth;
 const isOwner = require('../middlewares/ownerCheck').isOwner;
 const doesExists = require('../middlewares/doesExists').doesExists;
+
 //Create a lead and assign it to a user
 router.post('/create', isAuth, (req, res) => {
 
@@ -18,8 +20,7 @@ router.post('/create', isAuth, (req, res) => {
     Owner: req.session.passport.user
   };
   //Mandatory check of the fields
-  const emailRegex = new RegExp("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$");
-  if (!emailRegex.test(lead.EmailAddress)) {
+  if (!isEmailValid(lead.EmailAddress)) {
     return res.status(400).json({ message: "EmailAddress in not valid" });
   }
 
@@ -45,6 +46,9 @@ router.post('/update', isAuth, doesExists, isOwner, (req, res) => {
   const updates = {
     ...req.body,
     ModifiedOn: Date.now()
+  }
+  if (!isEmailValid(updates.EmailAddress)) {
+    return res.status(400).json({ message: "EmailAddress in not valid" });
   }
   Lead.findByIdAndUpdate(leadId, updates, { runValidators: true })
   .then(() => {
