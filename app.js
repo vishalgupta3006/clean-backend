@@ -51,6 +51,6 @@ app.use('*', (req, res) => {
   res.status(404).json({ message: 'Route not found', route: req.url});
 })
 //Listen to the port
-app.listen(process.env.port, () => {
-  console.log(`app is listening on port ${process.env.port}`);
+app.listen(process.env.PORT|| 8080, () => {
+  console.log(`app is listening on port ${process.env.PORT|| 8080}`);
 });
