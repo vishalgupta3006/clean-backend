@@ -24,7 +24,7 @@ router.post('/', (req, res) => {
 
       //Save the user to the DB
       newUser.save()
-        .then(() => res.status(200).json({ message: 'User successfully Registered' }))
+        .then(() => res.status(201).json({ message: 'User successfully Registered' }))
         .catch(err => res.status(400).json(err));
     })
     .catch(err => res.status(400).json(err));
