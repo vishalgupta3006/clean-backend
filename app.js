@@ -2,12 +2,13 @@ const express = require('express');
 const mongoose = require('mongoose');
 const session = require('express-session');
 const passport = require('passport');
+const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const MongoStore = require('connect-mongo');
 require('dotenv').config();
 const app = express();
 
-
+app.use(cors());
 //Passport config
 require('./config/passport');
 
