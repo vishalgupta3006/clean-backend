@@ -10,7 +10,6 @@ const doesExists = require('../middlewares/doesExists').doesExists;
 
 //Create a lead and assign it to a user
 router.post('/create', isAuth, (req, res) => {
-
   //Save response of the body
   const lead = {
     ...req.body,
@@ -20,23 +19,18 @@ router.post('/create', isAuth, (req, res) => {
     Owner: req.session.passport.user
   };
   //Mandatory check of the fields
-  if (!isEmailValid(lead.EmailAddress)) {
+  if (!isEmailValid(lead.EmailAddress)) 
     return res.status(400).json({ message: "EmailAddress in not valid" });
-  }
 
   //Upload to the database
   const newLead = new Lead(lead);
   newLead.save()
-    .then(() => {
-      //Check a user and assign him the lead
-      User.findById(req.session.passport.user)
-        .then((user) => {
-          user.Leads.push(newLead._id);
-          user.save()
-            .then(() => res.status(201).json({ message: 'Lead is added' }))
-            .catch(err => res.status(400).json(err));
-        })
+    .then(() => User.findById(req.session.passport.user))
+    .then(user => {
+      user.Leads.push(newLead._id)
+      return user.save()
     })
+    .then(() => res.status(201).json({ message: 'Lead is added' }))
     .catch(err => res.status(400).json(err));
 })
 
@@ -47,32 +41,26 @@ router.post('/update', isAuth, doesExists, isOwner, (req, res) => {
     ...req.body,
     ModifiedOn: Date.now()
   }
-  if (!isEmailValid(updates.EmailAddress)) {
+  if (!isEmailValid(updates.EmailAddress))
     return res.status(400).json({ message: "EmailAddress in not valid" });
-  }
+    
   Lead.findByIdAndUpdate(leadId, updates, { runValidators: true })
-  .then(() => {
-    res.status(200).json({ message: 'Lead updated'})
-  })
-  .catch(err => res.status(400).json(err)) 
+    .then(() => res.status(200).json({ message: 'Lead updated' }))
+    .catch(err => res.status(400).json(err))
 })
 
 //Delete the lead
 router.post('/delete', isAuth, doesExists, isOwner, (req, res) => {
   const leadId = url.parse(req.url, true).query.leadId;
   Lead.findByIdAndDelete(leadId)
-  .then(() => {
-    //Delete the lead from user's leads array
-    User.findById(req.session.passport.user)
+    .then(() => User.findById(req.session.passport.user))
     .then(user => {
-      for(let i = 0; i < user.Leads.length; i++)
-        if(user.Leads[i] === leadId)
+      for (let i = 0; i < user.Leads.length; i++)
+        if (user.Leads[i] === leadId)
           user.Leads.splice(i, 1);
-      res.status(200).json({ message: 'Lead Deleted'})
+      res.status(200).json({ message: 'Lead Deleted' })
     })
     .catch(err => res.status(400).json(err))
-  })
-  .catch(err => res.status(400).json(err)) 
 })
 
 module.exports = router;
