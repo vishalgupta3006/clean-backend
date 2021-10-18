@@ -2,13 +2,12 @@ const express = require('express');
 const mongoose = require('mongoose');
 const session = require('express-session');
 const passport = require('passport');
-const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const MongoStore = require('connect-mongo');
 require('dotenv').config();
 const app = express();
+const cors = require('cors')
 
-app.use(cors());
 //Passport config
 require('./config/passport');
 
@@ -24,7 +23,6 @@ mongoose.connect(process.env.DB_String, dbOptions)
 //Middleware to read the body of requests
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
 
 //Express session middleware
 app.use(session({
@@ -39,18 +37,25 @@ app.use(session({
     maxAge: 1000 * 60 * 60 * 24
   }
 }));
-
+app.use(cookieParser());
 
 //Passport middlewares
 app.use(passport.initialize());
 app.use(passport.session());
 
+//Allow CORS from the selected origins
+app.use(cors({
+  origin: 'http://localhost:3000',
+  credentials: true,
+  //allowedHeaders: ['Content-Type', 'Accept', 'X-Requested-With', 'X-HTTP-Method-Override'],
+}));
+
 //Endpoints
 app.use('/api/', require('./api/index'));
-
 app.use('*', (req, res) => {
-  res.status(404).json({ message: 'Route not found', route: req.url});
+  res.status(404).json({ message: 'Route not found', route: req.url})
 })
+
 //Listen to the port
 app.listen(process.env.PORT|| 8080, () => {
   console.log(`app is listening on port ${process.env.PORT|| 8080}`);

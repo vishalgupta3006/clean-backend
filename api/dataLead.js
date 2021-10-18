@@ -4,6 +4,7 @@ const router = express.Router();
 const isAuth = require('../middlewares/authMiddleware').isAuth;
 const User = require('../model/User');
 const Lead = require('../model/Lead');
+// const cors = require('cors');
 
 //get all leads
 router.get('/all',isAuth, (req,res) => {
