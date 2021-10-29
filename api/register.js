@@ -5,6 +5,9 @@ const genPassword = require('../utils/passwordUtil').genPassword;
 
 router.post('/', (req, res) => {
 
+  if(!req.body.FirstName || !req.body.LastName || !req.body.EmailAddress || !req.body.PhoneNumber || !req.body.Country || !req.body.Age || !req.body.password){
+    return res.status(400).json({message: 'Please Fill All the mandatory Fields'});
+  }
   const user = {
     ...req.body,
     _id: uuid.v4(),
@@ -18,13 +21,13 @@ router.post('/', (req, res) => {
       { PhoneNumber: newUser.PhoneNumber }
     ]})
     .then(users => {
-      //If email Exists return
+      //If email or Phone Exists return
       if (users.length > 0)
         return res.status(409).json({ message: 'An Account with the same email or phone already exists' });
 
       //Save the user to the DB
       newUser.save()
-        .then(() => res.status(201).json({ message: 'User successfully Registered' }))
+        .then(() => res.status(200).json({ message: 'User successfully Registered' }))
         .catch(err => res.status(400).json(err));
     })
     .catch(err => res.status(400).json(err));
