@@ -45,7 +45,7 @@ app.use(passport.session());
 
 //Allow CORS from the selected origins
 app.use(cors({
-  origin: 'http://localhost:3000',
+  origin: ['http://localhost:3000','http://192.168.1.107:3000','https://clean-ui-sigma.vercel.app'],
   credentials: true,
   //allowedHeaders: ['Content-Type', 'Accept', 'X-Requested-With', 'X-HTTP-Method-Override'],
 }));
