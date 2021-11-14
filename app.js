@@ -25,9 +25,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 //Express session middleware
+// app.set('trust proxy', 1);
+app.use(cookieParser());
 app.use(session({
+  name:'USER_SESSION',
   secret: process.env.Session_Secret,
   resave: true,
+  proxy: true,
   store: MongoStore.create({
     mongoUrl: process.env.DB_String,
     mongoOptions: dbOptions
@@ -39,7 +43,6 @@ app.use(session({
     secure: true
   }
 }));
-app.use(cookieParser());
 
 //Passport middlewares
 app.use(passport.initialize());
